@@ -5,10 +5,11 @@
  *      Author: kwarc
  */
 
-#include <stm32f7xx.h>
-
 #include <iostream>
 #include <cstring>
+
+#include <hal/hal.hpp>
+#include <drivers/stm32f7/gpio.hpp>
 
 class test_class
 {
@@ -33,6 +34,8 @@ int globvar;
 
 int main(void)
 {
+    hal::system_init();
+
     if (globvar == 0)
         globvar++;
 
@@ -46,6 +49,12 @@ int main(void)
     char a[14];
     memset(a, 0, sizeof(a));
 
+    std::cout << "Enabling green LED..." << std::endl;
+    gpio::init(gpio::port::I, 1);
+    gpio::write(gpio::port::I, 1, true);
+    gpio::write(gpio::port::I, 1, false);
+
+    std::cout << "Entering infinite loop..." << std::endl;
     while(true);
     return 0;
 }

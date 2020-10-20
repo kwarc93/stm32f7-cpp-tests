@@ -5,9 +5,9 @@
  *      Author: kwarc
  */
 
-#include <stm32f7xx.h>
+#include <cmsis/stm32f7xx.h>
 
-void system_init(void)
+extern "C" void system_init(void)
 {
 #if (__FPU_USED == 1)
     /* Set bits 20-23 to enable full access to CP10 and CP11 coprocessors. */
@@ -15,8 +15,5 @@ void system_init(void)
     __DSB();
     __ISB();
 #endif
-
-    /* Initialize USART for stdout */
-
 }
 
