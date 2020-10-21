@@ -16,7 +16,11 @@ static drivers::usart1 usart1{115200};
 
 void hal::system::init(void)
 {
+    /* Number of group priorities: 16, subpriorities: 16. */
+    NVIC_SetPriorityGrouping(0x07 - __NVIC_PRIO_BITS);
 
+    /* Set System Tick interrupt */
+    SysTick_Config(hal::system::system_clock / hal::system::systick_freq);
 }
 
 //-----------------------------------------------------------------------------
