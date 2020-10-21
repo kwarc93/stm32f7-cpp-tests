@@ -10,6 +10,9 @@
 
 #include <cmsis/stm32f7xx.h>
 
+namespace drivers
+{
+
 class gpio final
 {
 public:
@@ -55,5 +58,7 @@ public:
 private:
     static void enable_clock(port port);
 };
+
+}
 
 #endif /* STM32F7_GPIO_HPP_ */

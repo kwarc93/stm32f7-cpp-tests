@@ -9,7 +9,9 @@
 
 #include <cstdint>
 
-//--------------------------------------------------------------------------------
+using namespace drivers;
+
+//-----------------------------------------------------------------------------
 /* private */
 
 void gpio::enable_clock(port port)
@@ -54,7 +56,7 @@ void gpio::enable_clock(port port)
     }
 }
 
-//--------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /* public */
 
 void gpio::init(port port, uint8_t pin, af af, mode mode, type type, speed speed, pupd pupd)

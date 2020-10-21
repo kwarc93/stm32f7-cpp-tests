@@ -8,8 +8,21 @@
 #ifndef STM32F7_USART_HPP_
 #define STM32F7_USART_HPP_
 
-bool usart1_init(unsigned int baudrate);
-char usart1_read(void);
-void usart1_write(char data);
+#include <hal/hal_io_interface.hpp>
+
+namespace drivers
+{
+
+class usart1 : public hal::interface::io
+{
+public:
+    explicit usart1(unsigned int baudrate);
+    virtual ~usart1() {};
+
+    std::byte read(void);
+    void write(std::byte);
+};
+
+}
 
 #endif /* STM32F7_USART_HPP_ */
