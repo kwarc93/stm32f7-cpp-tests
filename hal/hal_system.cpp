@@ -56,3 +56,8 @@ extern "C" void _ttywrch(int ch)
 {
     usart1.write(static_cast<std::byte>(ch));
 }
+
+extern "C" void SysTick_Handler(void)
+{
+
+}
