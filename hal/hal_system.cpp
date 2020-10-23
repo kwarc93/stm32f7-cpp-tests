@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------------
 
 /* Initialize USART1 for stdout */
-static drivers::usart1 usart1{115200};
+static drivers::usart usart1 {1, 115200};
 
 void hal::system::init(void)
 {
@@ -28,28 +28,12 @@ void hal::system::init(void)
 
 extern "C" int _write (int fd, char *ptr, int len)
 {
-    int written = 0;
-
-    while (len--)
-    {
-        usart1.write(static_cast<std::byte>(*ptr++));
-        written++;
-    }
-
-    return written;
+    return usart1.write(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" int _read (int fd, char *ptr, int len)
 {
-    int read = 0;
-
-    while (len--)
-    {
-        *ptr++ = static_cast<char>(usart1.read());
-        read++;
-    }
-
-    return read;
+    return usart1.read(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" void _ttywrch(int ch)

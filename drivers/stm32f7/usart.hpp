@@ -8,19 +8,27 @@
 #ifndef STM32F7_USART_HPP_
 #define STM32F7_USART_HPP_
 
+#include <cmsis/stm32f7xx.h>
+
 #include <hal/hal_io_interface.hpp>
 
 namespace drivers
 {
 
-class usart1 : public hal::interface::io
+class usart : public hal::interface::io
 {
 public:
-    explicit usart1(unsigned int baudrate);
-    virtual ~usart1() {};
+    explicit usart(uint8_t id, uint32_t baudrate);
+    virtual ~usart() {};
 
     std::byte read(void);
-    void write(std::byte);
+    void write(std::byte byte);
+    std::size_t read(std::byte *data, std::size_t size);
+    std::size_t write(const std::byte *data, std::size_t size);
+
+private:
+    uint8_t id;
+    static constexpr USART_TypeDef *usartx[3] = { USART1, USART2, USART3 };
 };
 
 }

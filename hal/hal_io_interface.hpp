@@ -17,7 +17,9 @@ namespace hal::interface
     public:
         virtual ~io() {};
         virtual std::byte read(void) = 0;
-        virtual void write(std::byte) = 0;
+        virtual void write(std::byte byte) = 0;
+        virtual std::size_t read(std::byte *data, std::size_t size) = 0;
+        virtual std::size_t write(const std::byte *data, std::size_t size) = 0;
     };
 }
 
