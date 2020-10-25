@@ -4,16 +4,22 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../hal/hal_delay.cpp \
+../hal/hal_led.cpp \
 ../hal/hal_system.cpp \
 ../hal/hal_temperature_sensor.cpp \
 ../hal/hal_usart.cpp 
 
 OBJS += \
+./hal/hal_delay.o \
+./hal/hal_led.o \
 ./hal/hal_system.o \
 ./hal/hal_temperature_sensor.o \
 ./hal/hal_usart.o 
 
 CPP_DEPS += \
+./hal/hal_delay.d \
+./hal/hal_led.d \
 ./hal/hal_system.d \
 ./hal/hal_temperature_sensor.d \
 ./hal/hal_usart.d 

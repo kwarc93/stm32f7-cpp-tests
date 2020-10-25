@@ -32,10 +32,10 @@ namespace hal
         hal::interface::temperature_sensor *interface;
     };
 
-    class ds18b20 : public temperature_sensor
+    class air_temperature_sensor : public temperature_sensor
     {
     public:
-        ds18b20(void)
+        air_temperature_sensor(void)
         {
             interface = new drivers::ds18b20(drivers::gpio::port::C, 7);
         }

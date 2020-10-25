@@ -11,9 +11,8 @@
 
 #include <hal/hal_system.hpp>
 
-#include <drivers/stm32f7/gpio.hpp>
-#include <drivers/stm32f7/delay.hpp>
-
+#include <hal/hal_led.hpp>
+#include <hal/hal_delay.hpp>
 #include <hal/hal_temperature_sensor.hpp>
 
 int main(void)
@@ -22,16 +21,19 @@ int main(void)
 
     std::cout << "System started" << std::endl;
 
-    drivers::gpio::init(drivers::gpio::port::I, 1);
+    hal::led::low_battery::init();
+    hal::led::lcd_backlight::init();
+    hal::temperature_sensor *sensor = new hal::air_temperature_sensor();
 
-    hal::temperature_sensor *sensor = new hal::ds18b20();
-
+    bool led_state = true;
     while(true)
     {
         float temperature = sensor->read_temperature();
+
         std::cout << "Temperature: " << temperature << " *C" << std::endl;
-        drivers::gpio::toggle(drivers::gpio::port::I, 1);
-        drivers::delay::delay_ms(500);
+
+        hal::led::low_battery::set(led_state ^= true);
+        hal::delay::delay_ms(500);
     }
 
     return 0;
