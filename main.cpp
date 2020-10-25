@@ -24,11 +24,11 @@ int main(void)
 
     drivers::gpio::init(drivers::gpio::port::I, 1);
 
-    hal::temperature_sensor *temp_sens = new hal::ds18b20();
+    hal::temperature_sensor *sensor = new hal::ds18b20();
 
     while(true)
     {
-        float temperature = temp_sens->read_temperature();
+        float temperature = sensor->read_temperature();
         std::cout << "Temperature: " << temperature << " *C" << std::endl;
         drivers::gpio::toggle(drivers::gpio::port::I, 1);
         drivers::delay::delay_ms(500);
