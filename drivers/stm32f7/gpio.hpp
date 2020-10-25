@@ -10,6 +10,8 @@
 
 #include <cmsis/stm32f7xx.h>
 
+#include <cstdint>
+
 namespace drivers
 {
 

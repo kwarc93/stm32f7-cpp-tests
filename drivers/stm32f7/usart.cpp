@@ -7,7 +7,6 @@
 
 #include "usart.hpp"
 
-#include <cmsis/stm32f7xx.h>
 #include <hal/hal_system.hpp>
 #include <drivers/stm32f7/gpio.hpp>
 
@@ -37,7 +36,7 @@ usart::usart(uint8_t id, uint32_t baudrate)
         return;
     }
 
-    this->id = id;
+    this->id = id - 1;
 
     this->usartx[this->id]->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
     this->usartx[this->id]->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;

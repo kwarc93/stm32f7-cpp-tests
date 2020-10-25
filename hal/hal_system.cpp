@@ -7,12 +7,11 @@
 
 #include "hal_system.hpp"
 
-#include <drivers/stm32f7/usart.hpp>
+#include <hal/hal_usart.hpp>
 
 //-----------------------------------------------------------------------------
 
-/* Initialize USART1 for stdout */
-static drivers::usart usart1 {1, 115200};
+static auto &debug = hal::usart::debug::get_instance();
 
 void hal::system::init(void)
 {
@@ -21,6 +20,11 @@ void hal::system::init(void)
 
     /* Set System Tick interrupt */
     SysTick_Config(hal::system::system_clock / hal::system::systick_freq);
+
+    /* Enable DWT cycles counter (TODO: create core driver)*/
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CYCCNT = 0;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
 //-----------------------------------------------------------------------------
@@ -28,17 +32,17 @@ void hal::system::init(void)
 
 extern "C" int _write (int fd, char *ptr, int len)
 {
-    return usart1.write(reinterpret_cast<std::byte*>(ptr), len);
+    return debug.write(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" int _read (int fd, char *ptr, int len)
 {
-    return usart1.read(reinterpret_cast<std::byte*>(ptr), len);
+    return debug.read(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" void _ttywrch(int ch)
 {
-    usart1.write(static_cast<std::byte>(ch));
+    debug.write(static_cast<std::byte>(ch));
 }
 
 extern "C" void SysTick_Handler(void)

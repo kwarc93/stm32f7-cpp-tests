@@ -10,7 +10,9 @@
 
 #include <cmsis/stm32f7xx.h>
 
-#include <hal/hal_io_interface.hpp>
+#include <hal/hal_interface.hpp>
+
+#include <cstdint>
 
 namespace drivers
 {

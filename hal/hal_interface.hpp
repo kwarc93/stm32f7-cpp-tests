@@ -1,12 +1,12 @@
 /*
- * hal_io_interface.hpp
+ * hal_interface.hpp
  *
  *  Created on: 21 paź 2020
  *      Author: kwarc
  */
 
-#ifndef HAL_IO_INTERFACE_HPP_
-#define HAL_IO_INTERFACE_HPP_
+#ifndef HAL_INTERFACE_HPP_
+#define HAL_INTERFACE_HPP_
 
 #include <cstddef>
 
@@ -21,6 +21,13 @@ namespace hal::interface
         virtual std::size_t read(std::byte *data, std::size_t size) = 0;
         virtual std::size_t write(const std::byte *data, std::size_t size) = 0;
     };
+
+    class temperature_sensor
+    {
+    public:
+        virtual ~temperature_sensor() {};
+        virtual float read_temperature(void) = 0;
+    };
 }
 
-#endif /* HAL_IO_INTERFACE_HPP_ */
+#endif /* HAL_INTERFACE_HPP_ */
