@@ -9,14 +9,14 @@
 
 #include <drivers/stm32f7/delay.hpp>
 
-using namespace hal::delay;
+using namespace hal;
 
-void hal::delay::delay_ms(unsigned int ms)
+void delay::delay_ms(unsigned int ms)
 {
     drivers::delay::delay_ms(ms);
 }
 
-void hal::delay::delay_us(unsigned int us)
+void delay::delay_us(unsigned int us)
 {
     drivers::delay::delay_us(us);
 }

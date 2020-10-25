@@ -9,9 +9,9 @@
 
 #include <drivers/stm32f7/usart.hpp>
 
-using namespace hal::usart;
+using namespace hal;
 
-hal::interface::io & debug::get_instance(void)
+interface::io & usart::debug::get_instance(void)
 {
     static drivers::usart usart1 {1, 115200};
     return usart1;

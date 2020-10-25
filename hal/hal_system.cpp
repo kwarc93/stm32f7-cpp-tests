@@ -9,11 +9,13 @@
 
 #include <hal/hal_usart.hpp>
 
+using namespace hal;
+
 //-----------------------------------------------------------------------------
 
-static auto &debug = hal::usart::debug::get_instance();
+static auto &debug = usart::debug::get_instance();
 
-void hal::system::init(void)
+void system::init(void)
 {
     /* Number of group priorities: 16, subpriorities: 16. */
     NVIC_SetPriorityGrouping(0x07 - __NVIC_PRIO_BITS);
