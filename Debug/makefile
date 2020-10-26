@@ -59,7 +59,7 @@ all: stm32f7-cpp-tests.elf secondary-outputs
 stm32f7-cpp-tests.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GNU ARM Cross C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m7 -march=armv7e-m -mthumb -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fsingle-precision-constant -Wunused -Wuninitialized -Wall  -g3 -T "/home/kwarc/eclipse/eclipse-workspaces/arm-cortex-m/stm32f7-cpp-tests/system/arm-cortex-m.ld" -Xlinker --gc-sections -Xlinker --print-memory-usage -Wl,-Map,"stm32f7-cpp-tests.map" --specs=nano.specs -u _printf_float -u _scanf_float --specs=nosys.specs -o "stm32f7-cpp-tests.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m7 -march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16 -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fsingle-precision-constant -Wunused -Wuninitialized -Wall  -g3 -T "/home/kwarc/eclipse/eclipse-workspaces/arm-cortex-m/stm32f7-cpp-tests/system/arm-cortex-m.ld" -Xlinker --gc-sections -Xlinker --print-memory-usage -Wl,-Map,"stm32f7-cpp-tests.map" --specs=nano.specs -u _printf_float -u _scanf_float --specs=nosys.specs -o "stm32f7-cpp-tests.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -13,9 +13,6 @@
 
 using namespace drivers;
 
-#pragma GCC push_options
-#pragma GCC optimize ("O3")
-
 void delay::delay_ms(uint32_t ms)
 {
     const uint32_t start = DWT->CYCCNT;
@@ -30,4 +27,3 @@ void delay::delay_us(uint32_t us)
     while ((DWT->CYCCNT - start) <= us);
 }
 
-#pragma GCC pop_options

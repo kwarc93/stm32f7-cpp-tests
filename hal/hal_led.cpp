@@ -11,13 +11,13 @@
 
 using namespace hal;
 
-void led::low_battery::init(void)
+void led::debug::init(void)
 {
     drivers::gpio::init(drivers::gpio::port::I, 1);
     drivers::gpio::write(drivers::gpio::port::I, 1, false);
 }
 
-void led::low_battery::set(bool state)
+void led::debug::set(bool state)
 {
     drivers::gpio::write(drivers::gpio::port::I, 1, state);
 }

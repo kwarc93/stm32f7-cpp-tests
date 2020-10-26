@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <cstring>
 
 #include <hal/hal_system.hpp>
 
@@ -21,18 +20,19 @@ int main(void)
 
     std::cout << "System started" << std::endl;
 
-    hal::led::low_battery::init();
+    hal::led::debug::init();
     hal::led::lcd_backlight::init();
+
     hal::temperature_sensor *sensor = new hal::air_temperature_sensor();
 
     bool led_state = true;
-    while(true)
+    while (true)
     {
         float temperature = sensor->read_temperature();
 
         std::cout << "Temperature: " << temperature << " *C" << std::endl;
 
-        hal::led::low_battery::set(led_state ^= true);
+        hal::led::debug::set(led_state ^= true);
         hal::delay::delay_ms(500);
     }
 

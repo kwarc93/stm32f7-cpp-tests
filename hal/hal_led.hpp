@@ -10,7 +10,7 @@
 
 namespace hal::led
 {
-    namespace low_battery
+    namespace debug
     {
         void init(void);
         void set(bool);
