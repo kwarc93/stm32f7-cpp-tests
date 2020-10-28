@@ -9,6 +9,8 @@
 
 #include <hal/hal_usart.hpp>
 
+#include <drivers/stm32f7/core.hpp>
+
 using namespace hal;
 
 //-----------------------------------------------------------------------------
@@ -23,11 +25,7 @@ void system::init(void)
     /* Set System Tick interrupt */
     SysTick_Config(hal::system::system_clock / hal::system::systick_freq);
 
-    /* Enable DWT cycles counter (TODO: create core driver)*/
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-    DWT->LAR = 0xC5ACCE55;
-    DWT->CYCCNT = 0;
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    drivers::core::enable_cycles_counter();
 }
 
 //-----------------------------------------------------------------------------

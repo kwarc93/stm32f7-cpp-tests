@@ -12,10 +12,10 @@
 
 namespace hal::interface
 {
-    class io
+    class serial
     {
     public:
-        virtual ~io() {};
+        virtual ~serial() {};
         virtual std::byte read(void) = 0;
         virtual void write(std::byte byte) = 0;
         virtual std::size_t read(std::byte *data, std::size_t size) = 0;

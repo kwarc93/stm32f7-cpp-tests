@@ -10,36 +10,47 @@
 
 #include <hal/hal_interface.hpp>
 
+#include <drivers/stm32f7/core.hpp>
 #include <drivers/ds18b20.hpp>
 
 namespace hal
 {
+
+//-----------------------------------------------------------------------------
+
     class temperature_sensor
     {
     public:
+        temperature_sensor(hal::interface::temperature_sensor *interface);
+        virtual ~temperature_sensor(void);
 
-        virtual ~temperature_sensor(void)
-        {
-            delete interface;
-        }
-
-        virtual float read_temperature(void)
-        {
-            return interface->read_temperature();
-        }
+        enum unit { celsius, farenheit, kelvin };
+        virtual float read_temperature(enum unit unit = celsius);
 
     protected:
         hal::interface::temperature_sensor *interface;
     };
 
-    class air_temperature_sensor : public temperature_sensor
+//-----------------------------------------------------------------------------
+
+    class external_temperature_sensor : public temperature_sensor
     {
     public:
-        air_temperature_sensor(void)
-        {
-            interface = new drivers::ds18b20(drivers::gpio::port::C, 7);
-        }
+        external_temperature_sensor(void) :
+            temperature_sensor(new drivers::ds18b20(drivers::gpio::port::C, 7)) {}
     };
+
+//-----------------------------------------------------------------------------
+
+    class internal_temperature_sensor : public temperature_sensor
+    {
+    public:
+        internal_temperature_sensor(void) :
+            temperature_sensor(new drivers::core_temperature_sensor()) {}
+    };
+
+//-----------------------------------------------------------------------------
+
 }
 
 #endif /* HAL_TEMPERATURE_SENSOR_HPP_ */

@@ -14,7 +14,7 @@ namespace hal::usart
 {
     namespace debug
     {
-        hal::interface::io & get_instance(void);
+        hal::interface::serial & get_instance(void);
     }
 }
 

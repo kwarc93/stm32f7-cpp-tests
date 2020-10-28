@@ -17,7 +17,7 @@
 namespace drivers
 {
 
-class one_wire : public hal::interface::io
+class one_wire : public hal::interface::serial
 {
 public:
     explicit one_wire(drivers::gpio::port port, uint8_t pin);

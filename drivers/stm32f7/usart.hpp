@@ -17,7 +17,7 @@
 namespace drivers
 {
 
-class usart : public hal::interface::io
+class usart : public hal::interface::serial
 {
 public:
     explicit usart(uint8_t id, uint32_t baudrate);

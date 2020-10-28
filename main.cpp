@@ -23,14 +23,18 @@ int main(void)
     hal::led::debug::init();
     hal::led::lcd_backlight::init();
 
-    hal::temperature_sensor *sensor = new hal::air_temperature_sensor();
+    hal::temperature_sensor *external_sensor = new hal::external_temperature_sensor();
+    hal::temperature_sensor *internal_sensor = new hal::internal_temperature_sensor();
 
     bool led_state = true;
     while (true)
     {
-        float temperature = sensor->read_temperature();
+        float external_temperature = external_sensor->read_temperature();
+        float internal_temperature = internal_sensor->read_temperature();
 
-        std::cout << "Temperature: " << temperature << " *C" << std::endl;
+        std::cout << "Temperature: "
+                  << "internal:" << internal_temperature << "*C"
+                  << "external:" << external_temperature << "*C" << std::endl;
 
         hal::led::debug::set(led_state ^= true);
         hal::delay::delay_ms(500);

@@ -11,7 +11,7 @@
 
 using namespace hal;
 
-interface::io & usart::debug::get_instance(void)
+interface::serial & usart::debug::get_instance(void)
 {
     static drivers::usart usart1 {1, 115200};
     return usart1;
