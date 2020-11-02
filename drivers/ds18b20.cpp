@@ -11,7 +11,7 @@
 
 using namespace drivers;
 
-ds18b20::ds18b20(drivers::gpio::port port, uint8_t pin) : one_wire {port, pin}
+ds18b20::ds18b20(drivers::gpio::io io) : one_wire {io}
 {
 
 }

@@ -37,7 +37,9 @@ namespace hal
     {
     public:
         external_temperature_sensor(void) :
-            temperature_sensor(new drivers::ds18b20(drivers::gpio::port::C, 7)) {}
+            temperature_sensor(new drivers::ds18b20(one_wire_pin)) {}
+    private:
+        static constexpr drivers::gpio::io one_wire_pin = { drivers::gpio::port::portc, drivers::gpio::pin::pin7 };
     };
 
 //-----------------------------------------------------------------------------

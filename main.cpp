@@ -9,9 +9,8 @@
 #include <iomanip>
 
 #include <hal/hal_system.hpp>
-
-#include <hal/hal_led.hpp>
 #include <hal/hal_delay.hpp>
+#include <hal/hal_led.hpp>
 #include <hal/hal_temperature_sensor.hpp>
 
 int main(void)
@@ -20,8 +19,8 @@ int main(void)
 
     std::cout << "System started" << std::endl;
 
-    hal::led::debug::init();
-    hal::led::lcd_backlight::init();
+    hal::led *debug_led = new hal::leds::debug();
+    hal::led *backlight_led = new hal::leds::backlight();
 
     hal::temperature_sensor *external_sensor = new hal::external_temperature_sensor();
     hal::temperature_sensor *internal_sensor = new hal::internal_temperature_sensor();
@@ -33,10 +32,10 @@ int main(void)
         float internal_temperature = internal_sensor->read_temperature();
 
         std::cout << "Temperature: "
-                  << "internal:" << internal_temperature << "*C"
-                  << "external:" << external_temperature << "*C" << std::endl;
+                  << "internal: " << internal_temperature << "*C"
+                  << " external: " << external_temperature << "*C" << std::endl;
 
-        hal::led::debug::set(led_state ^= true);
+        debug_led->set(led_state ^= true);
         hal::delay::delay_ms(500);
     }
 

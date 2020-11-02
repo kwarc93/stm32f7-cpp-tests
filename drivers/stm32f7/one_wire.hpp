@@ -20,7 +20,7 @@ namespace drivers
 class one_wire : public hal::interface::serial
 {
 public:
-    explicit one_wire(drivers::gpio::port port, uint8_t pin);
+    explicit one_wire(drivers::gpio::io io);
     virtual ~one_wire() {};
 
     bool reset_pulse(void);
@@ -30,8 +30,7 @@ public:
     std::size_t write(const std::byte *data, std::size_t size);
 
 private:
-    drivers::gpio::port port;
-    uint8_t pin;
+    drivers::gpio::io io;
 
     inline void write_data_pin(bool state);
     inline bool read_data_pin(void);

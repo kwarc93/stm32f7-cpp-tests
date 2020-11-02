@@ -7,29 +7,52 @@
 
 #include "hal_led.hpp"
 
-#include <drivers/stm32f7/gpio.hpp>
-
 using namespace hal;
 
-void led::debug::init(void)
+led::led(hal::interface::led *interface)
 {
-    drivers::gpio::init(drivers::gpio::port::I, 1);
-    drivers::gpio::write(drivers::gpio::port::I, 1, false);
+    this->interface = interface;
+    this->brightness = 0;
 }
 
-void led::debug::set(bool state)
+led::~led(void)
 {
-    drivers::gpio::write(drivers::gpio::port::I, 1, state);
+    delete this->interface;
 }
 
-void led::lcd_backlight::init(void)
+void led::set(uint8_t brightness)
 {
-    drivers::gpio::init(drivers::gpio::port::K, 3);
-    drivers::gpio::write(drivers::gpio::port::K, 3, false);
+    this->brightness = brightness;
+    this->interface->set(brightness);
 }
 
-void led::lcd_backlight::set(bool state)
+void led::set(bool state)
 {
-    drivers::gpio::write(drivers::gpio::port::K, 3, state);
+    uint8_t brightness = state ? 255 : 0;
+    this->set(brightness);
 }
+
+//---------------------------------------------------------------------------
+
+rgb_led::rgb_led(hal::interface::led *interface[3])
+{
+    this->r = new led(interface[0]);
+    this->g = new led(interface[1]);
+    this->b = new led(interface[2]);
+}
+
+void rgb_led::set(uint8_t r, uint8_t g, uint8_t b)
+{
+    this->r->set(r);
+    this->g->set(g);
+    this->b->set(b);
+}
+
+void rgb_led::set(bool r, bool g, bool b)
+{
+    this->r->set(r);
+    this->g->set(g);
+    this->b->set(b);
+}
+
 

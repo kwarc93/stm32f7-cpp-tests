@@ -18,37 +18,37 @@ void gpio::enable_clock(port port)
 {
     switch (port)
     {
-        case port::A:
+        case port::porta:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
             break;
-        case port::B:
+        case port::portb:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
             break;
-        case port::C:
+        case port::portc:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
             break;
-        case port::D:
+        case port::portd:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
             break;
-        case port::E:
+        case port::porte:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
             break;
-        case port::F:
+        case port::portf:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN;
             break;
-        case port::G:
+        case port::portg:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN;
             break;
-        case port::H:
+        case port::porth:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
             break;
-        case port::I:
+        case port::porti:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOIEN;
             break;
-        case port::J:
+        case port::portj:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
             break;
-        case port::K:
+        case port::portk:
             RCC->AHB1ENR |= RCC_AHB1ENR_GPIOKEN;
             break;
         default:
@@ -59,43 +59,47 @@ void gpio::enable_clock(port port)
 //-----------------------------------------------------------------------------
 /* public */
 
-void gpio::init(port port, uint8_t pin, af af, mode mode, type type, speed speed, pupd pupd)
+void gpio::init(io &io, af af, mode mode, type type, speed speed, pupd pupd)
 {
-    enable_clock(port);
+    enable_clock(io.port);
 
-    GPIO_TypeDef *portp = reinterpret_cast<GPIO_TypeDef *>(port);
+    GPIO_TypeDef *port = reinterpret_cast<GPIO_TypeDef *> (io.port);
+    uint8_t pin = static_cast<uint8_t> (io.pin);
 
-    portp->MODER &= ~(0b11 << (2 * pin));
-    portp->MODER |= (uint8_t (mode) << (2 * pin));
+    port->MODER &= ~(0b11 << (2 * pin));
+    port->MODER |= (uint8_t (mode) << (2 * pin));
 
-    portp->OTYPER &= ~(0b1 << pin);
-    portp->OTYPER |= (uint8_t (type) << (pin));
+    port->OTYPER &= ~(0b1 << pin);
+    port->OTYPER |= (uint8_t (type) << (pin));
 
-    portp->OSPEEDR &= ~(0b11 << (2 * pin));
-    portp->OSPEEDR |= (uint8_t (speed) << (2 * pin));
+    port->OSPEEDR &= ~(0b11 << (2 * pin));
+    port->OSPEEDR |= (uint8_t (speed) << (2 * pin));
 
-    portp->PUPDR &= ~(0b11 << (2 * pin));
-    portp->PUPDR |= (uint8_t (pupd) << (2 * pin));
+    port->PUPDR &= ~(0b11 << (2 * pin));
+    port->PUPDR |= (uint8_t (pupd) << (2 * pin));
 
-    portp->AFR[pin < 8 ? 0 : 1] &= ~(0b1111 << (4 * (pin - (pin < 8 ? 0 : 8))));
-    portp->AFR[pin < 8 ? 0 : 1] |= (uint8_t (af) << (4 * (pin - (pin < 8 ? 0 : 8))));
+    port->AFR[pin < 8 ? 0 : 1] &= ~(0b1111 << (4 * (pin - (pin < 8 ? 0 : 8))));
+    port->AFR[pin < 8 ? 0 : 1] |= (uint8_t (af) << (4 * (pin - (pin < 8 ? 0 : 8))));
 }
 
-bool gpio::read(port port, uint8_t pin)
+bool gpio::read(io &io)
 {
-    GPIO_TypeDef *portp = reinterpret_cast<GPIO_TypeDef *>(port);
-    return (portp->IDR & (1 << pin));
+    GPIO_TypeDef *port = reinterpret_cast<GPIO_TypeDef *> (io.port);
+    uint8_t pin = static_cast<uint8_t> (io.pin);
+    return (port->IDR & (1 << pin));
 }
 
-void gpio::write(port port, uint8_t pin, bool state)
+void gpio::write(io &io, bool state)
 {
-    GPIO_TypeDef *portp = reinterpret_cast<GPIO_TypeDef *>(port);
-    portp->BSRR = state ? (1 << pin) : (1 << pin) << 16;
+    GPIO_TypeDef *port = reinterpret_cast<GPIO_TypeDef *> (io.port);
+    uint8_t pin = static_cast<uint8_t> (io.pin);
+    port->BSRR = state ? (1 << pin) : (1 << pin) << 16;
 }
 
-void gpio::toggle(port port, uint8_t pin)
+void gpio::toggle(io &io)
 {
-    GPIO_TypeDef *portp = reinterpret_cast<GPIO_TypeDef *>(port);
-    portp->ODR ^= 1 << pin;
+    GPIO_TypeDef *port = reinterpret_cast<GPIO_TypeDef *> (io.port);
+    uint8_t pin = static_cast<uint8_t> (io.pin);
+    port->ODR ^= 1 << pin;
 }
 

@@ -9,6 +9,7 @@
 #define HAL_INTERFACE_HPP_
 
 #include <cstddef>
+#include <cstdint>
 
 namespace hal::interface
 {
@@ -27,6 +28,13 @@ namespace hal::interface
     public:
         virtual ~temperature_sensor() {};
         virtual float read_temperature(void) = 0;
+    };
+
+    class led
+    {
+    public:
+        virtual ~led() {};
+        virtual void set(uint8_t brightness) = 0;
     };
 }
 

@@ -17,11 +17,15 @@ usart::usart(uint8_t id, uint32_t baudrate)
     switch (id)
     {
     case 1:
+    {
         RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
         __DSB();
-        gpio::init(gpio::port::A, 9, gpio::af::af7, gpio::mode::af);
-        gpio::init(gpio::port::B, 7, gpio::af::af7, gpio::mode::af);
-        break;
+        gpio::io tx { gpio::port::porta, gpio::pin::pin9 };
+        gpio::io rx { gpio::port::portb, gpio::pin::pin7 };
+        gpio::init(tx, gpio::af::af7, gpio::mode::af);
+        gpio::init(rx, gpio::af::af7, gpio::mode::af);
+    }
+    break;
     case 2:
         RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
         __DSB();

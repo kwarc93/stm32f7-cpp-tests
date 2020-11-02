@@ -16,7 +16,7 @@ namespace drivers
     class ds18b20 : public hal::interface::temperature_sensor
     {
     public:
-        explicit ds18b20(drivers::gpio::port port, uint8_t pin);
+        explicit ds18b20(drivers::gpio::io io);
 
         float read_temperature(void);
 

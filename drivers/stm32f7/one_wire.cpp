@@ -14,12 +14,11 @@ using namespace drivers;
 //-----------------------------------------------------------------------------
 /* public */
 
-one_wire::one_wire(gpio::port port, uint8_t pin)
+one_wire::one_wire(drivers::gpio::io io)
 {
-    this->port = port;
-    this->pin = pin;
+    this->io = io;
 
-    gpio::init(this->port, this->pin, gpio::af::af0,
+    gpio::init(this->io, gpio::af::af0,
                gpio::mode::output, gpio::type::od,
                gpio::speed::very_high, gpio::pupd::pu);
 }
@@ -92,12 +91,12 @@ std::size_t one_wire::write(const std::byte *data, std::size_t size)
 
 void one_wire::write_data_pin(bool state)
 {
-    gpio::write(this->port, this->pin, state);
+    gpio::write(this->io, state);
 }
 
 bool one_wire::read_data_pin(void)
 {
-    return gpio::read(this->port, this->pin);
+    return gpio::read(this->io);
 }
 
 void one_wire::write_bit(bool bit)
