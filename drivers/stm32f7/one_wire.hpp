@@ -21,7 +21,7 @@ class one_wire : public hal::interface::serial
 {
 public:
     explicit one_wire(drivers::gpio::io io);
-    virtual ~one_wire() {};
+    ~one_wire() {};
 
     bool reset_pulse(void);
     std::byte read(void);

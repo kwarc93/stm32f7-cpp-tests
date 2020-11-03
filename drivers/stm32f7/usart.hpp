@@ -20,8 +20,8 @@ namespace drivers
 class usart : public hal::interface::serial
 {
 public:
-    explicit usart(uint8_t id, uint32_t baudrate);
-    virtual ~usart() {};
+    usart(uint8_t id, uint32_t baudrate);
+    ~usart() {};
 
     std::byte read(void);
     void write(std::byte byte);

@@ -22,8 +22,8 @@ namespace hal
     public:
         led(hal::interface::led *interface);
         virtual ~led(void);
-        void set(uint8_t brightness);
-        void set(bool state);
+        virtual void set(uint8_t brightness);
+        virtual void set(bool state);
     protected:
         hal::interface::led *interface;
     private:
