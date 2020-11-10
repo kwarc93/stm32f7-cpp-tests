@@ -7,55 +7,57 @@
 
 #include "usart.hpp"
 
+#include <cmsis/stm32f7xx.h>
+
 #include <hal/hal_system.hpp>
 #include <drivers/stm32f7/gpio.hpp>
 
 using namespace drivers;
 
-usart::usart(uint8_t id, uint32_t baudrate)
+static USART_TypeDef * const usartx[3] = { USART1, USART2, USART3 };
+
+usart::usart(id id, uint32_t baudrate) : hw_id (static_cast<uint8_t>(id))
 {
     switch (id)
     {
-    case 1:
-    {
-        RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-        __DSB();
-        gpio::io tx { gpio::port::porta, gpio::pin::pin9 };
-        gpio::io rx { gpio::port::portb, gpio::pin::pin7 };
-        gpio::init(tx, gpio::af::af7, gpio::mode::af);
-        gpio::init(rx, gpio::af::af7, gpio::mode::af);
-    }
-    break;
-    case 2:
-        RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
-        __DSB();
-        /* TODO: Initialize GPIO */
-        break;
-    case 3:
-        RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
-        __DSB();
-        /* TODO: Initialize GPIO */
-        break;
-    default:
-        return;
+        case id::usart1:
+        {
+            RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+            __DSB ();
+            gpio::io tx { gpio::port::porta, gpio::pin::pin9 };
+            gpio::io rx { gpio::port::portb, gpio::pin::pin7 };
+            gpio::init (tx, gpio::af::af7, gpio::mode::af);
+            gpio::init (rx, gpio::af::af7, gpio::mode::af);
+        }
+            break;
+        case id::usart2:
+            RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+            __DSB ();
+            /* TODO: Initialize GPIO */
+            break;
+        case id::usart3:
+            RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+            __DSB ();
+            /* TODO: Initialize GPIO */
+            break;
+        default:
+            return;
     }
 
-    this->id = id - 1;
-
-    this->usartx[this->id]->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
-    this->usartx[this->id]->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    usartx[this->hw_id]->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
+    usartx[this->hw_id]->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 }
 
 std::byte usart::read()
 {
-    while (!( this->usartx[this->id]->ISR & USART_ISR_RXNE));
-    return static_cast<std::byte>(this->usartx[this->id]->RDR);
+    while (!( usartx[this->hw_id]->ISR & USART_ISR_RXNE));
+    return static_cast<std::byte>(usartx[this->hw_id]->RDR);
 }
 
 void usart::write(std::byte byte)
 {
-    while (!( this->usartx[this->id]->ISR & USART_ISR_TXE));
-    this->usartx[this->id]->TDR = std::to_integer<volatile uint32_t>(byte);
+    while (!( usartx[this->hw_id]->ISR & USART_ISR_TXE));
+    usartx[this->hw_id]->TDR = std::to_integer<volatile uint32_t>(byte);
 }
 
 std::size_t usart::read(std::byte *data, std::size_t size)

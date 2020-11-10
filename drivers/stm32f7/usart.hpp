@@ -8,8 +8,6 @@
 #ifndef STM32F7_USART_HPP_
 #define STM32F7_USART_HPP_
 
-#include <cmsis/stm32f7xx.h>
-
 #include <hal/hal_interface.hpp>
 
 #include <cstdint>
@@ -20,7 +18,12 @@ namespace drivers
 class usart : public hal::interface::serial
 {
 public:
-    usart(uint8_t id, uint32_t baudrate);
+    enum class id
+    {
+        usart1, usart2, usart3
+    };
+
+    usart(id id, uint32_t baudrate);
     ~usart() {};
 
     std::byte read(void);
@@ -29,8 +32,7 @@ public:
     std::size_t write(const std::byte *data, std::size_t size);
 
 private:
-    uint8_t id;
-    static constexpr USART_TypeDef *usartx[3] = { USART1, USART2, USART3 };
+    const uint8_t hw_id;
 };
 
 }
