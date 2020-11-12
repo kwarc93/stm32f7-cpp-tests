@@ -55,8 +55,8 @@ public:
 
     struct io
     {
-        enum port port;
-        enum pin pin;
+        gpio::port port;
+        gpio::pin pin;
     };
 
     static void init(io &io,

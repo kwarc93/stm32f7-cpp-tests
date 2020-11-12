@@ -10,54 +10,43 @@
 #include <cmsis/stm32f7xx.h>
 
 #include <hal/hal_system.hpp>
+
 #include <drivers/stm32f7/gpio.hpp>
+#include <drivers/stm32f7/rcc.hpp>
 
 using namespace drivers;
 
-static USART_TypeDef * const usartx[3] = { USART1, USART2, USART3 };
+struct usart_hw_descriptor
+{
+    USART_TypeDef *const peripheral;
+    rcc::periph_bus bus;
+    gpio::io tx_pin;
+    gpio::io rx_pin;
+};
+
+static const usart_hw_descriptor usartx[3] =
+{
+    [static_cast<uint8_t>(usart::id::usart1)] = {USART1, RCC_PERIPH_BUS(APB2, USART1), { gpio::port::porta, gpio::pin::pin9 }, { gpio::port::portb, gpio::pin::pin7 }},
+    /* TODO */
+};
 
 usart::usart(id id, uint32_t baudrate) : hw_id (static_cast<uint8_t>(id))
 {
-    switch (id)
-    {
-        case id::usart1:
-        {
-            RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-            __DSB ();
-            gpio::io tx { gpio::port::porta, gpio::pin::pin9 };
-            gpio::io rx { gpio::port::portb, gpio::pin::pin7 };
-            gpio::init (tx, gpio::af::af7, gpio::mode::af);
-            gpio::init (rx, gpio::af::af7, gpio::mode::af);
-        }
-            break;
-        case id::usart2:
-            RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
-            __DSB ();
-            /* TODO: Initialize GPIO */
-            break;
-        case id::usart3:
-            RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
-            __DSB ();
-            /* TODO: Initialize GPIO */
-            break;
-        default:
-            return;
-    }
 
-    usartx[this->hw_id]->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
-    usartx[this->hw_id]->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    usartx[this->hw_id].peripheral->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
+    usartx[this->hw_id].peripheral->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 }
 
 std::byte usart::read()
 {
-    while (!( usartx[this->hw_id]->ISR & USART_ISR_RXNE));
-    return static_cast<std::byte>(usartx[this->hw_id]->RDR);
+    while (!( usartx[this->hw_id].peripheral->ISR & USART_ISR_RXNE));
+    return static_cast<std::byte>(usartx[this->hw_id].peripheral->RDR);
 }
 
 void usart::write(std::byte byte)
 {
-    while (!( usartx[this->hw_id]->ISR & USART_ISR_TXE));
-    usartx[this->hw_id]->TDR = std::to_integer<volatile uint32_t>(byte);
+    while (!( usartx[this->hw_id].peripheral->ISR & USART_ISR_TXE));
+    usartx[this->hw_id].peripheral->TDR = std::to_integer<volatile uint32_t>(byte);
 }
 
 std::size_t usart::read(std::byte *data, std::size_t size)

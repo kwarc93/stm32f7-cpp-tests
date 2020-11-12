@@ -10,6 +10,7 @@
 #include <hal/hal_usart.hpp>
 
 #include <drivers/stm32f7/core.hpp>
+#include <drivers/stm32f7/rcc.hpp>
 
 using namespace hal;
 
