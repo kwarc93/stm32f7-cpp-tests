@@ -8,6 +8,7 @@
 #include "hal_led.hpp"
 
 #include <cmath>
+#include <functional>
 
 using namespace hal;
 
@@ -84,28 +85,13 @@ void rgb_led::set(float h, float s, float v)
     if (h > 360.0f || h < 0.0f || s > 1.0f || s < 0.0f || v > 1.0f || v < 0.0f)
         return;
 
-    float c = s * v;
-    float x = c * (1 - std::fabs(std::fmod(h / 60.0, 2.0f) - 1));
-    float m = v - c;
-    float r, g, b;
+    /* Convert HSV to RGB */
+    auto k = [ &h ](float n) { return fmod((n + h / 60.0f), 6); };
+    auto f = [ &k, &s, &v ](float n) { return v - v * s * fmax(0, fmin(fmin(k(n), 4 - k(n)), 1));};
 
-    if (h >= 0 && h < 60)
-        r = c, g = x, b = 0;
-    else if (h >= 60 && h < 120)
-        r = x, g = c, b = 0;
-    else if (h >= 120 && h < 180)
-        r = 0, g = c, b = x;
-    else if (h >= 180 && h < 240)
-        r = 0, g = x, b = c;
-    else if (h >= 240 && h < 300)
-        r = x, g = 0, b = c;
-    else
-        r = c, g = 0, b = x;
+    uint8_t r = f(5) * UINT8_MAX;
+    uint8_t g = f(3) * UINT8_MAX;
+    uint8_t b = f(1) * UINT8_MAX;
 
-    uint8_t R = (r + m) * UINT8_MAX;
-    uint8_t G = (g + m) * UINT8_MAX;
-    uint8_t B = (b + m) * UINT8_MAX;
-
-    this->set(R, G, B);
+    this->set(r, g, b);
 }
-
