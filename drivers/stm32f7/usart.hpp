@@ -31,8 +31,9 @@ public:
     std::size_t read(std::byte *data, std::size_t size);
     std::size_t write(const std::byte *data, std::size_t size);
 
+    struct usart_hw;
 private:
-    const uint8_t hw_id;
+    const usart_hw &hw;
 };
 
 }

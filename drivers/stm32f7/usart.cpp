@@ -7,6 +7,8 @@
 
 #include "usart.hpp"
 
+#include <map>
+
 #include <cmsis/stm32f7xx.h>
 
 #include <hal/hal_system.hpp>
@@ -16,37 +18,43 @@
 
 using namespace drivers;
 
-struct usart_hw_descriptor
+struct usart::usart_hw
 {
-    USART_TypeDef *const peripheral;
-    rcc::periph_bus bus;
+    USART_TypeDef *const reg;
+    rcc::periph_bus pbus;
+
+    gpio::af pin_af;
     gpio::io tx_pin;
     gpio::io rx_pin;
 };
 
-static const usart_hw_descriptor usartx[3] =
+static const std::map<usart::id, usart::usart_hw> usartx =
 {
-    [static_cast<uint8_t>(usart::id::usart1)] = {USART1, RCC_PERIPH_BUS(APB2, USART1), { gpio::port::porta, gpio::pin::pin9 }, { gpio::port::portb, gpio::pin::pin7 }},
-    /* TODO */
+    {usart::id::usart1,
+    {USART1, RCC_PERIPH_BUS(APB2, USART1), gpio::af::af7, { gpio::port::porta, gpio::pin::pin9 }, { gpio::port::portb, gpio::pin::pin7 }}},
 };
 
-usart::usart(id id, uint32_t baudrate) : hw_id (static_cast<uint8_t>(id))
+usart::usart(id id, uint32_t baudrate) : hw (usartx.at(id))
 {
+    rcc::enable_periph_clock(this->hw.pbus, true);
 
-    usartx[this->hw_id].peripheral->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
-    usartx[this->hw_id].peripheral->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    gpio::init(this->hw.tx_pin, this->hw.pin_af, gpio::mode::af);
+    gpio::init(this->hw.rx_pin, this->hw.pin_af, gpio::mode::af);
+
+    this->hw.reg->BRR = (uint32_t) (hal::system::system_clock + baudrate / 2) / baudrate;
+    this->hw.reg->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 }
 
 std::byte usart::read()
 {
-    while (!( usartx[this->hw_id].peripheral->ISR & USART_ISR_RXNE));
-    return static_cast<std::byte>(usartx[this->hw_id].peripheral->RDR);
+    while (!( this->hw.reg->ISR & USART_ISR_RXNE));
+    return static_cast<std::byte>(this->hw.reg->RDR);
 }
 
 void usart::write(std::byte byte)
 {
-    while (!( usartx[this->hw_id].peripheral->ISR & USART_ISR_TXE));
-    usartx[this->hw_id].peripheral->TDR = std::to_integer<volatile uint32_t>(byte);
+    while (!( this->hw.reg->ISR & USART_ISR_TXE));
+    this->hw.reg->TDR = std::to_integer<volatile uint32_t>(byte);
 }
 
 std::size_t usart::read(std::byte *data, std::size_t size)

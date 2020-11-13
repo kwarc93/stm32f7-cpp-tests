@@ -59,15 +59,15 @@ public:
         gpio::pin pin;
     };
 
-    static void init(io &io,
+    static void init(const io &io,
                      af af = af::af0,
                      mode mode = mode::output,
                      type type = type::pp,
                      speed speed = speed::very_high,
                      pupd pupd = pupd::none);
-    static bool read(io &io);
-    static void write(io &io, bool state);
-    static void toggle(io &io);
+    static bool read(const io &io);
+    static void write(const io &io, bool state);
+    static void toggle(const io &io);
 private:
     static void enable_clock(port port);
 };
