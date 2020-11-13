@@ -17,7 +17,7 @@ namespace drivers
     class led_pwm : public hal::interface::led
     {
     public:
-        led_pwm(drivers::pwm &pwm, uint8_t channels);
+        led_pwm(drivers::pwm &pwm);
         void set(uint8_t brightness);
 
     private:

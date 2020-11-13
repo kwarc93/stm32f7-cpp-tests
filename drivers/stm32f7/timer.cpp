@@ -193,7 +193,7 @@ uint32_t counter::get_value(void)
 
 //-----------------------------------------------------------------------------
 
-pwm::pwm(id id, std::vector<channel> &channels, uint32_t frequency, float duty) :
+pwm::pwm(id id, const std::vector<channel> &channels, uint32_t frequency, float duty) :
 timer(id)
 {
     for (auto &ch : channels)

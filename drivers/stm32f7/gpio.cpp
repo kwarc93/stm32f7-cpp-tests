@@ -9,6 +9,8 @@
 
 #include <cstdint>
 
+#include <drivers/stm32f7/rcc.hpp>
+
 using namespace drivers;
 
 //-----------------------------------------------------------------------------
@@ -19,37 +21,37 @@ void gpio::enable_clock(port port)
     switch (port)
     {
         case port::porta:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOA), true);
             break;
         case port::portb:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOB), true);
             break;
         case port::portc:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOC), true);
             break;
         case port::portd:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOD), true);
             break;
         case port::porte:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOE), true);
             break;
         case port::portf:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOFEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOF), true);
             break;
         case port::portg:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOGEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOG), true);
             break;
         case port::porth:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOH), true);
             break;
         case port::porti:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOIEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOI), true);
             break;
         case port::portj:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOJ), true);
             break;
         case port::portk:
-            RCC->AHB1ENR |= RCC_AHB1ENR_GPIOKEN;
+            rcc::enable_periph_clock(RCC_PERIPH_BUS(AHB1, GPIOK), true);
             break;
         default:
             break;

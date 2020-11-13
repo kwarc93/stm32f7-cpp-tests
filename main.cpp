@@ -19,24 +19,33 @@ int main(void)
 
     std::cout << "System started" << std::endl;
 
-    hal::led *debug_led = new hal::leds::debug();
-    hal::led *backlight_led = new hal::leds::backlight();
+    auto debug_led = new hal::leds::debug();
+    auto backlight_led = new hal::leds::backlight();
+    auto rgb_led = new hal::leds::simple_rgb();
 
-    hal::temperature_sensor *external_sensor = new hal::external_temperature_sensor();
-    hal::temperature_sensor *internal_sensor = new hal::internal_temperature_sensor();
+    auto external_sensor = new hal::external_temperature_sensor();
+    auto internal_sensor = new hal::internal_temperature_sensor();
 
     bool led_state = true;
+    float hue = 0;
+    const float hue_incr = 0.2f;
+
     while (true)
     {
-        float external_temperature = external_sensor->read_temperature();
-        float internal_temperature = internal_sensor->read_temperature();
+//        float external_temperature = external_sensor->read_temperature();
+//        float internal_temperature = internal_sensor->read_temperature();
+//
+//        std::cout << "Temperature: "
+//                  << "internal: " << internal_temperature << "*C"
+//                  << " external: " << external_temperature << "*C" << std::endl;
+//
+//        debug_led->set(led_state ^= true);
 
-        std::cout << "Temperature: "
-                  << "internal: " << internal_temperature << "*C"
-                  << " external: " << external_temperature << "*C" << std::endl;
-
-        debug_led->set(led_state ^= true);
-        hal::delay::delay_ms(500);
+        rgb_led->set(hue, 1.0f, 1.0f);
+        hue += hue_incr;
+        if (hue > 360.0f)
+            hue = 0;
+        hal::delay::delay_ms(5);
     }
 
     return 0;

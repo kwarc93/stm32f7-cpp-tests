@@ -73,7 +73,7 @@ private:
 class pwm : public timer
 {
 public:
-    pwm(id id, std::vector<channel> &channels, uint32_t frequency, float duty);
+    pwm(id id, const std::vector<channel> &channels, uint32_t frequency, float duty);
     ~pwm() {};
 
     void set_duty(channel ch, float duty);

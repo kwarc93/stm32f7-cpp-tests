@@ -16,8 +16,6 @@ using namespace hal;
 
 //-----------------------------------------------------------------------------
 
-static auto &debug = usart::debug::get_instance();
-
 void system::init(void)
 {
     /* Number of group priorities: 16, subpriorities: 16. */
@@ -34,16 +32,19 @@ void system::init(void)
 
 extern "C" int _write (int fd, char *ptr, int len)
 {
+    auto &debug = usart::debug::get_instance();
     return debug.write(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" int _read (int fd, char *ptr, int len)
 {
+    auto &debug = usart::debug::get_instance();
     return debug.read(reinterpret_cast<std::byte*>(ptr), len);
 }
 
 extern "C" void _ttywrch(int ch)
 {
+    auto &debug = usart::debug::get_instance();
     debug.write(static_cast<std::byte>(ch));
 }
 

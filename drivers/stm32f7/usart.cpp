@@ -31,7 +31,8 @@ struct usart::usart_hw
 static const std::map<usart::id, usart::usart_hw> usartx =
 {
     {usart::id::usart1,
-    {USART1, RCC_PERIPH_BUS(APB2, USART1), gpio::af::af7, { gpio::port::porta, gpio::pin::pin9 }, { gpio::port::portb, gpio::pin::pin7 }}},
+    {USART1, RCC_PERIPH_BUS(APB2, USART1), gpio::af::af7,
+    { gpio::port::porta, gpio::pin::pin9 }, { gpio::port::portb, gpio::pin::pin7 }}},
 };
 
 usart::usart(id id, uint32_t baudrate) : hw (usartx.at(id))
