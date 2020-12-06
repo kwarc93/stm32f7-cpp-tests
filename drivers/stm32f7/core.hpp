@@ -21,6 +21,15 @@ public:
     static void enable_cycles_counter(void);
 };
 
+class core_critical_section
+{
+public:
+    core_critical_section(void);
+    ~core_critical_section(void);
+private:
+    uint32_t primask;
+};
+
 class core_temperature_sensor : public hal::interface::temperature_sensor
 {
 public:

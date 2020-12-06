@@ -30,6 +30,7 @@ SUBDIRS := \
 drivers \
 drivers/stm32f7 \
 hal \
+libs \
 . \
 system \
 

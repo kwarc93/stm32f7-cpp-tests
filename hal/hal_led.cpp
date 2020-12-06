@@ -40,9 +40,9 @@ led::led(hal::interface::led *interface)
     this->brightness = 0;
 }
 
-led::~led(void)
+led::~led()
 {
-    delete this->interface;
+
 }
 
 void led::set(uint8_t brightness)
@@ -61,9 +61,16 @@ void led::set(bool state)
 
 rgb_led::rgb_led(const std::array<hal::interface::led *, 3> &interface)
 {
-    this->r = new led(interface[0]);
-    this->g = new led(interface[1]);
-    this->b = new led(interface[2]);
+    this->r = new led {interface[0]};
+    this->g = new led {interface[1]};
+    this->b = new led {interface[2]};
+}
+
+rgb_led::~rgb_led()
+{
+    delete this->r;
+    delete this->g;
+    delete this->b;
 }
 
 void rgb_led::set(uint8_t r, uint8_t g, uint8_t b)
@@ -94,4 +101,26 @@ void rgb_led::set(float h, float s, float v)
     uint8_t b = f(1) * UINT8_MAX;
 
     this->set(r, g, b);
+}
+
+//---------------------------------------------------------------------------
+
+led_chain::led_chain(uint32_t leds, uint8_t colors, hal::interface::led *interface) :
+led_count {leds}, led_colors {colors}
+{
+    this->leds = new led {interface};
+    const std::vector<uint8_t> color {colors, 0};
+    this->colors.assign(leds, color);
+}
+
+led_chain::~led_chain()
+{
+    delete this->leds;
+}
+
+void led_chain::update(void)
+{
+    for (auto &color : this->colors)
+        for (auto &component : color)
+            this->leds->set(component);
 }

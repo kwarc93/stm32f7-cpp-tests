@@ -24,6 +24,9 @@ void system::init(void)
     /* Set System Tick interrupt */
     SysTick_Config(hal::system::system_clock / hal::system::systick_freq);
 
+    /* Configure FLASH access */
+    FLASH->ACR |= FLASH_ACR_ARTEN | FLASH_ACR_PRFTEN;
+
     drivers::core::enable_cycles_counter();
 }
 

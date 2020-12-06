@@ -20,6 +20,18 @@ void core::enable_cycles_counter(void)
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
+core_critical_section::core_critical_section(void)
+{
+    this->primask = __get_PRIMASK();
+    __disable_irq();
+}
+
+core_critical_section::~core_critical_section(void)
+{
+    if (!this->primask)
+        __enable_irq();
+}
+
 core_temperature_sensor::core_temperature_sensor(void)
 {
     /* TODO: Implement internal temperature sensor initialization */

@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <functional>
 #include <cmath>
 
 #include <hal/hal_system.hpp>
@@ -13,9 +14,25 @@
 #include <hal/hal_led.hpp>
 #include <hal/hal_temperature_sensor.hpp>
 
+#include <drivers/stm32f7/core.hpp>
+
 #include <libs/hsluv.h>
 
-static void rainbow(hal::leds::simple_rgb *led)
+void hsv2rgb(float h, float s, float v, uint8_t *r, uint8_t *g, uint8_t *b)
+{
+    if (h > 360.0f || h < 0.0f || s > 1.0f || s < 0.0f || v > 1.0f || v < 0.0f)
+        return;
+
+    /* Convert HSV to RGB */
+    auto k = [ &h ](float n) { return fmod((n + h / 60.0f), 6); };
+    auto f = [ &k, &s, &v ](float n) { return v - v * s * fmax(0, fmin(fmin(k(n), 4 - k(n)), 1));};
+
+    *r = f(5) * UINT8_MAX;
+    *g = f(3) * UINT8_MAX;
+    *b = f(1) * UINT8_MAX;
+}
+
+static void rainbow(hal::rgb_led *led)
 {
     static float x = 0;
     const float tau = acosf(-1.0f) * 2.0f;
@@ -37,12 +54,12 @@ static void rainbow(hal::leds::simple_rgb *led)
         x = 0.0f;
 }
 
-static void hsluv(hal::leds::simple_rgb *led)
+static void hsluv(hal::rgb_led *led)
 {
     static float h = 0.0f;
 
     float r, g, b;
-    hsluv2rgb(h, 100.0f, 50.0f, &r, &g, &b);
+    hsluv2rgb(h, 100.0f, 66.0f, &r, &g, &b);
 
     uint8_t u8r = r * UINT8_MAX;
     uint8_t u8g = g * UINT8_MAX;
@@ -54,10 +71,21 @@ static void hsluv(hal::leds::simple_rgb *led)
         h = 0.0f;
 }
 
-static void hsv(hal::leds::simple_rgb *led)
+static void hsv(hal::led_chain *chain)
 {
     static float h = 0.0f;
-    led->set(h, 1.0f, 1.0f);
+
+    uint8_t r,g,b;
+    hsv2rgb(h, 1.0, 0.3, &r, &g, &b);
+
+    for (auto &color : chain->colors)
+        color = {g, r, b};
+
+    {
+        drivers::core_critical_section cs;
+        chain->update();
+    }
+
     h += 0.2f;
     if (h >= 360.0f)
         h = 0.0f;
@@ -81,7 +109,8 @@ int main(void)
 
     auto debug_led = new hal::leds::debug();
     auto backlight_led = new hal::leds::backlight();
-    auto rgb_led = new hal::leds::simple_rgb();
+    auto rgb_led = new hal::leds::basic_rgb();
+    auto rgb_strip = new hal::leds::rgb_strip();
 
     auto external_sensor = new hal::external_temperature_sensor();
     auto internal_sensor = new hal::internal_temperature_sensor();
@@ -89,10 +118,19 @@ int main(void)
     backlight_led->set(false);
     debug_led->set(true);
 
+    for (auto &color : rgb_strip->colors)
+        color = {0, 32, 0};
+
+    {
+        drivers::core_critical_section cs;
+        rgb_strip->update();
+    }
+
+    hal::delay::delay_ms(1000);
+
     while (true)
     {
-        hsv(rgb_led);
-        hal::delay::delay_ms(5);
+        hsv(rgb_strip);
     }
 
     debug_led->set(false);
