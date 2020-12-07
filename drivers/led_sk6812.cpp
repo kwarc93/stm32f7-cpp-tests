@@ -12,14 +12,14 @@
 
 using namespace drivers;
 
-led_sk6812::led_sk6812(drivers::gpio::io io, uint32_t leds, uint8_t colors) : led_count(leds), color_count(colors)
+led_sk6812::led_sk6812(gpio::io io, uint32_t leds, uint8_t colors) : led_count(leds), color_count(colors)
 {
     this->io = io;
     this->bytes_written = 0;
     gpio::init(this->io,
-               drivers::gpio::af::af0,
-               drivers::gpio::mode::output,
-               drivers::gpio::type::od);
+               gpio::af::af0,
+               gpio::mode::output,
+               gpio::type::od);
 
     for (uint32_t i = 0; i < this->led_count; i++)
         for (uint8_t j = 0; j < this->color_count; j++)
@@ -34,26 +34,12 @@ void led_sk6812::set(uint8_t brightness)
         gpio::write(this->io, true);
 
         if (bit)
-        {
-            asm volatile ("mov r0, r0");
-            asm volatile ("mov r0, r0");
-            asm volatile ("mov r0, r0");
-            asm volatile ("mov r0, r0");
-            asm volatile ("mov r0, r0");
-            asm volatile ("mov r0, r0");
-        }
+            delay::nop<6>();
         else
-        {
-            asm volatile ("mov r0, r0");
-        }
+            delay::nop<1>();
 
         gpio::write(this->io, false);
-        asm volatile ("mov r0, r0");
-        asm volatile ("mov r0, r0");
-        asm volatile ("mov r0, r0");
-        asm volatile ("mov r0, r0");
-        asm volatile ("mov r0, r0");
-        asm volatile ("mov r0, r0");
+        delay::nop<6>();
     }
 
     if (++this->bytes_written == (this->led_count * this->color_count))
@@ -64,5 +50,5 @@ void led_sk6812::reset(void)
 {
     this->bytes_written = 0;
     gpio::write(this->io, false);
-    delay::delay_us(80);
+    delay::us(80);
 }

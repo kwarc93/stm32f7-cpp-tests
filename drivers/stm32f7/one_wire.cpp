@@ -26,13 +26,13 @@ one_wire::one_wire(drivers::gpio::io io)
 bool one_wire::reset_pulse(void)
 {
     this->write_data_pin(false);
-    delay::delay_us(480);
+    delay::us(480);
     this->write_data_pin(true);
-    delay::delay_us(70);
+    delay::us(70);
 
     bool presence_impulse = !this->read_data_pin();
 
-    delay::delay_us(410);
+    delay::us(410);
 
     return presence_impulse;
 }
@@ -104,28 +104,28 @@ void one_wire::write_bit(bool bit)
     if (bit)
     {
         write_data_pin(false);
-        delay::delay_us(6);
+        delay::us(6);
         write_data_pin(true);
-        delay::delay_us(64);
+        delay::us(64);
     }
     else
     {
         write_data_pin(false);
-        delay::delay_us(60);
+        delay::us(60);
         write_data_pin(true);
-        delay::delay_us(10);
+        delay::us(10);
     }
 }
 
 bool one_wire::read_bit(void)
 {
     write_data_pin(false);
-    delay::delay_us(6);
+    delay::us(6);
     write_data_pin(true);
-    delay::delay_us(9);
+    delay::us(9);
 
     bool bit = !read_data_pin();
 
-    delay::delay_us(55);
+    delay::us(55);
     return bit;
 }

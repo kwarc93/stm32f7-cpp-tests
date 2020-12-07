@@ -76,7 +76,7 @@ static void hsv(hal::led_chain *chain)
     static float h = 0.0f;
 
     uint8_t r,g,b;
-    hsv2rgb(h, 1.0, 0.3, &r, &g, &b);
+    hsv2rgb(h, 1.0, 0.5, &r, &g, &b);
 
     for (auto &color : chain->colors)
         color = {g, r, b};

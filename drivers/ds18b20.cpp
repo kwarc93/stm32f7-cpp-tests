@@ -26,7 +26,7 @@ float ds18b20::read_temperature(void)
         std::byte cmd1[2] {std::byte{0xCC}, std::byte{0x44}};
         this->one_wire.write(cmd1, sizeof(cmd1));
 
-        delay::delay_ms(1000);
+        delay::ms(1000);
 
         this->one_wire.reset_pulse();
 

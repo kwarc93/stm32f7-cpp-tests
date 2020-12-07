@@ -13,10 +13,10 @@ using namespace hal;
 
 void delay::delay_ms(unsigned int ms)
 {
-    drivers::delay::delay_ms(ms);
+    drivers::delay::ms(ms);
 }
 
 void delay::delay_us(unsigned int us)
 {
-    drivers::delay::delay_us(us);
+    drivers::delay::us(us);
 }
