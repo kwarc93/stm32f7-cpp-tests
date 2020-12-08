@@ -10,7 +10,7 @@
 
 using namespace drivers;
 
-led_pwm::led_pwm(drivers::pwm &pwm) : pwm (pwm)
+led_pwm::led_pwm(drivers::pwm &pwm) : pwm {pwm}
 {
 
 }

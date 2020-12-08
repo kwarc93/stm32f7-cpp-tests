@@ -11,7 +11,7 @@
 
 using namespace drivers;
 
-ds18b20::ds18b20(drivers::gpio::io io) : one_wire {io}
+ds18b20::ds18b20(gpio::io io) : one_wire {io}
 {
 
 }

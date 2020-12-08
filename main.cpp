@@ -18,77 +18,39 @@
 
 #include <libs/hsluv.h>
 
-void hsv2rgb(float h, float s, float v, uint8_t *r, uint8_t *g, uint8_t *b)
+static void hsv2rgb(float h, float s, float v, uint8_t *r, uint8_t *g, uint8_t *b)
 {
     if (h > 360.0f || h < 0.0f || s > 1.0f || s < 0.0f || v > 1.0f || v < 0.0f)
         return;
 
     /* Convert HSV to RGB */
     auto k = [ &h ](float n) { return fmod((n + h / 60.0f), 6); };
-    auto f = [ &k, &s, &v ](float n) { return v - v * s * fmax(0, fmin(fmin(k(n), 4 - k(n)), 1));};
+    auto f = [ &k, &s, &v ](float n) { return v - v * s * fmax(0, fmin(fmin(k(n), 4 - k(n)), 1)); };
 
     *r = f(5) * UINT8_MAX;
     *g = f(3) * UINT8_MAX;
     *b = f(1) * UINT8_MAX;
 }
 
-static void rainbow(hal::rgb_led *led)
+static void rainbow(hal::led_chain *chain)
 {
-    static float x = 0;
-    const float tau = acosf(-1.0f) * 2.0f;
-    float vect[3] = {0.0f / 3.0f, 2.0f / 3.0f, 1.0f / 3.0f };
+    static float hoffset = 0;
+    const float hstep = 360.0f / chain->colors.size();
 
-    vect[0] += x; vect[1] += x; vect[2] += x;
-    vect[0] *= tau; vect[1] *= tau; vect[2] *= tau;
-    vect[0] = sinf(vect[0]); vect[1] = sinf(vect[1]); vect[2] = sinf(vect[2]);
-    vect[0] *= 0.5f; vect[1] *= 0.5f; vect[2] *= 0.5f;
-    vect[0] += 0.5f; vect[1] += 0.5f; vect[2] += 0.5f;
-    vect[0] = sqrtf(vect[0]); vect[1] = sqrtf(vect[1]); vect[2] = sqrtf(vect[2]);
-
-    uint8_t rgb[3] = {vect[0] * UINT8_MAX, vect[1] * UINT8_MAX, vect[2] * UINT8_MAX};
-
-    led->set(rgb[0], rgb[1], rgb[2]);
-
-    x += 0.001f;
-    if (x >= 1.0)
-        x = 0.0f;
-}
-
-static void hsluv(hal::rgb_led *led)
-{
-    static float h = 0.0f;
-
-    float r, g, b;
-    hsluv2rgb(h, 100.0f, 66.0f, &r, &g, &b);
-
-    uint8_t u8r = r * UINT8_MAX;
-    uint8_t u8g = g * UINT8_MAX;
-    uint8_t u8b = b * UINT8_MAX;
-    led->set(u8r, u8g, u8b);
-
-    h += 0.3f;
-    if (h >= 360.0f)
-        h = 0.0f;
-}
-
-static void hsv(hal::led_chain *chain)
-{
-    static float h = 0.0f;
-
-    uint8_t r,g,b;
-    hsv2rgb(h, 1.0, 0.5, &r, &g, &b);
-
-    for (auto &color : chain->colors)
-        color = {g, r, b};
-
+    for (uint32_t i = 0; i < chain->colors.size(); i++)
     {
-        drivers::core_critical_section cs;
-        chain->update();
+        float h = fmod(hoffset + (hstep * (2 * i + 1)) / 2, 360);
+
+        uint8_t r = 0, g = 0, b = 0;
+        hsv2rgb(h, 1.0f, 0.5f, &r, &g, &b);
+
+        chain->colors[i] = {g, r, b};
     }
 
-    h += 0.2f;
-    if (h >= 360.0f)
-        h = 0.0f;
+    hoffset += 2;
+
+    drivers::core_critical_section cs;
+    chain->update();
 }
 
 static void temperature(hal::temperature_sensor *int_sens, hal::temperature_sensor *ext_sens)
@@ -118,19 +80,9 @@ int main(void)
     backlight_led->set(false);
     debug_led->set(true);
 
-    for (auto &color : rgb_strip->colors)
-        color = {0, 32, 0};
-
-    {
-        drivers::core_critical_section cs;
-        rgb_strip->update();
-    }
-
-    hal::delay::delay_ms(1000);
-
     while (true)
     {
-        hsv(rgb_strip);
+        rainbow(rgb_strip);
     }
 
     debug_led->set(false);

@@ -9,7 +9,7 @@
 
 using namespace drivers;
 
-led_gpio::led_gpio(drivers::gpio::io io)
+led_gpio::led_gpio(gpio::io io)
 {
     this->io = io;
 

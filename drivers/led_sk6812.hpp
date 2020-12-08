@@ -17,15 +17,14 @@ namespace drivers
     class led_sk6812 : public hal::interface::led
     {
     public:
-        led_sk6812(gpio::io io, uint32_t leds, uint8_t colors);
+        led_sk6812(drivers::gpio::io io, uint32_t leds, uint8_t colors);
         void set(uint8_t brightness);
         void reset(void);
 
     private:
-        gpio::io io;
-        const uint32_t led_count;
-        const uint8_t color_count;
+        drivers::gpio::io io;
         uint32_t bytes_written;
+        const uint32_t bytes_to_write;
     };
 }
 

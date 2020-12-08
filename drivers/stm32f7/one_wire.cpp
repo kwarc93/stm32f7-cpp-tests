@@ -14,7 +14,7 @@ using namespace drivers;
 //-----------------------------------------------------------------------------
 /* public */
 
-one_wire::one_wire(drivers::gpio::io io)
+one_wire::one_wire(gpio::io io)
 {
     this->io = io;
 

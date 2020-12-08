@@ -34,7 +34,7 @@ static const uint8_t gamma_lut[256] =
    226, 228, 230, 232, 233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 255,
 };
 
-led::led(hal::interface::led *interface)
+led::led(interface::led *interface)
 {
     this->interface = interface;
     this->brightness = 0;
@@ -59,7 +59,7 @@ void led::set(bool state)
 
 //---------------------------------------------------------------------------
 
-rgb_led::rgb_led(const std::array<hal::interface::led *, 3> &interface)
+rgb_led::rgb_led(const std::array<interface::led *, 3> &interface)
 {
     this->r = new led {interface[0]};
     this->g = new led {interface[1]};
@@ -105,7 +105,7 @@ void rgb_led::set(float h, float s, float v)
 
 //---------------------------------------------------------------------------
 
-led_chain::led_chain(uint32_t leds, uint8_t colors, hal::interface::led *interface) :
+led_chain::led_chain(uint32_t leds, uint8_t colors, interface::led *interface) :
 led_count {leds}, led_colors {colors}
 {
     this->leds = new led {interface};

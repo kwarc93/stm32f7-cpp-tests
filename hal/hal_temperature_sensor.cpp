@@ -9,7 +9,7 @@
 
 using namespace hal;
 
-temperature_sensor::temperature_sensor(hal::interface::temperature_sensor *interface)
+temperature_sensor::temperature_sensor(interface::temperature_sensor *interface)
 {
     this->interface = interface;
 }
