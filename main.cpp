@@ -71,7 +71,6 @@ int main(void)
 
     auto debug_led = new hal::leds::debug();
     auto backlight_led = new hal::leds::backlight();
-    auto rgb_led = new hal::leds::basic_rgb();
     auto rgb_strip = new hal::leds::rgb_strip();
 
     auto external_sensor = new hal::external_temperature_sensor();

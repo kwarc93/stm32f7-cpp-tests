@@ -109,7 +109,7 @@ led_chain::led_chain(uint32_t leds, uint8_t colors, interface::led *interface) :
 led_count {leds}, led_colors {colors}
 {
     this->leds = new led {interface};
-    const std::vector<uint8_t> color {colors, 0};
+    const std::vector<uint8_t> color(colors, 0);
     this->colors.assign(leds, color);
 }
 
